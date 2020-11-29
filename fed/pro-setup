@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# make sure XFCE notifications service is started on each login
+# otherwise, start it by ruuning
+systemctl --user start xfce4-notifyd.service
+
+
+
+# basic stuff
+dnf install hdparm htop iftop atop ytop nc inxi lshw  screen -y
+
+# some goodies!
+dnf install levien-inconsolata-fonts arc-theme numix-gtk-theme f30-backgrounds-extras-gnome -y
+
+# desktop use stuff
+dnf install gimp gnome-maps simple-scan hplip-gui system-config-printer bleachbit chromium thunderbird -y
+
+dnf install xournalpp libreoffice-{calc,writer,draw,impress} -y
+
+
+
+
+# tap to click
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+
+# do not mount or run programs on media insertion
+gsettings set org.gnome.desktop.media-handling automount false
+gsettings set org.gnome.desktop.media-handling automount-open false
+
+# disable tracker and remote its db as we don't need it
+gsettings set org.freedesktop.Tracker.Miner.Files crawling-interval -2
+gsettings set org.freedesktop.Tracker.Miner.Files enable-monitors false
+
+
+
+
+
+
+
+
+
+
+
+
+# allow members of the wheel user group to administer printers without a password:
+cat << 'EOF' > /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
+polkit.addRule(function(action, subject) { 
+    if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" && 
+        subject.isInGroup("wheel")){ 
+        return polkit.Result.YES; 
+    } 
+});
+EOF
+
+
+
+# You can check font setting with:
+# xrdb -query | grep Xft
+# https://www.kilobitspersecond.com/2009/04/17/ubuntu-font-hinting-you-a-cautionary-tale/
+
+dnf install freetype-freeworld fonts-tweak-tool -y
+cat << 'EOF' > /etc/fonts/local.conf
+<?xml version='1.0'?>
+<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<fontconfig>
+<match target="font">
+    <edit name="antialias" mode="assign">
+        <bool>true</bool>
+    </edit>
+    <edit name="autohint" mode="assign">
+        <bool>false</bool>
+    </edit>
+    <edit name="hinting" mode="assign">
+        <bool>true</bool>
+    </edit>
+    <edit name="hintstyle" mode="assign">
+        <const>hintslight</const>
+    </edit>
+    <edit name="lcdfilter" mode="assign">
+        <const>lcddefault</const>
+    </edit>
+    <edit name="rgba" mode="assign">
+        <const>rgb</const>
+    </edit>
+    <edit name="embeddedbitmap" mode="assign">
+        <bool>false</bool>
+    </edit>
+</match>
+</fontconfig>
+EOF
+
+
+cat << 'EOF' > ~/.fonts.conf
+<?xml version="1.0" ?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+   <fontconfig>
+      <match target="font">
+         <edit name="autohint" mode="assign">
+            <bool>true</bool>
+         </edit>
+      </match>
+</fontconfig>
+EOF
+
+
+
+# Enable Flatpak
+dnf install flatpak -y
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+
+# Ebook reader Foliate
+#flatpak install flathub com.github.johnfactotum.Foliate -y
+
+# Mind Map Application
+#flatpak install flathub org.freeplane.App
+
+

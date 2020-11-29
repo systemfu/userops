@@ -1,0 +1,97 @@
+#!/bin/bash
+############## DEV ##################
+
+
+dnf install neovim ansible android-tools podman-compose wireguard-tools -y
+
+
+dnf install java-latest-openjdk-devel -y
+
+
+dnf install zeal geany geany-plugins-{markdown,vimode,addons} -y
+
+# should have the following stuff to make dev happy
+dnf install tilix wget mc strace lsof sysstat dstat socat mtr jwhois mutt elinks perf iperf iptraf httpry psacct powertop conky pgpdump p7zip  -y
+
+# ccid /yubikey/etc authentication/tools
+dnf install qtpass gnupg2-smime  pcsc-tools opensc pcsc-lite-ccid yubioath-desktop pam_yubico -y
+
+# - add "auth required pam_google_authenticator.so" (w/o quotes as a line) to /etc/pam.d/gdm-password file
+# - insert line just after all "auth" lines. To configure a user run "google-authenticator" as that user
+dnf install google-authenticator -y
+
+dnf install tokei -y
+
+dnf install vim-enhanced vim-nerdtree vim-taglist cscope -y
+
+dnf install virt-manager libvirt-daemon-lxc libvirt-daemon-config-network -y
+
+# Container and Virtualization
+dnf install podman podman-compose libguestfs-tools -y
+
+# "Tweak Tool" for setting like do not suspend when laptop lid is closed
+dnf install wodim xbacklight lm_sensors usbguard seahorse samba-client smartmontools wireshark nautilus-open-terminal dconf-editor gnome-tweak-tool gitk gitg syncthing -y
+
+# openscap-scanner scap-workbench scap-security-guide
+
+# check where is portecle
+
+# -- java dev
+dnf install java-1.8.0-openjdk-devel java-11-openjdk-devel postgresql-server pgadmin3 mysql-server -y
+
+#android dev
+dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686 -y
+
+#-- system dev. edb - excellent binary/asm debugger/viwer
+dnf install gcc gdb edb git ncurses-devel autoconf automake libtool -y
+
+dnf install glib glib-devel cmake pam-devel -y
+
+#-- system and java to native requires x86_64 versions as well ---#
+dnf install glibc.x86_64 glibc-devel.x86_64 libstdc++.x86_64 zlib-devel.x86_64 ncurses-devel.x86_64 libX11-devel.x86_64 libXrender.x86_64 libXrandr.x86_64 -y
+
+dnf install gnome-builder -y
+
+#### IoT / Embedded Computing
+
+dnf install arduino pulseview -y
+
+## related embedded serial
+dnf install minicom -y
+
+
+usermod -a -G wireshark $USER
+
+systemctl enable syncthing@$USER.service
+
+curl https://sh.rustup.rs -sSf | sh
+
+
+# Install VSCodium
+which codium > /dev/null || dnf install $(curl -s https://api.github.com/repos/VSCodium/vscodium/releases/latest | grep 'browser_' | cut -d\" -f4 | grep x86_64.rpm$) -y
+
+#Install DBeaver
+which dbeaver > /dev/null || dnf install $(curl -s https://api.github.com/repos/dbeaver/dbeaver/releases/latest | grep 'browser_' | cut -d\" -f4 | grep x86_64.rpm$) -y
+
+# Enable Flatpak
+dnf install flatpak -y
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Install netbeans
+#flatpak install flathub org.apache.netbeans -y
+
+# Install Android Studio
+#flatpak install flathub com.google.AndroidStudio -y
+
+# Rest Scope: http / rest testing tool
+flatpak install flathub com.gitlab.kendellfab.restscope -y
+
+# Ebook reader Foliate
+#flatpak install flathub com.github.johnfactotum.Foliate -y
+
+# Mind Map Application
+#flatpak install flathub org.freeplane.App
+
+
+
+
