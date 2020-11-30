@@ -4,7 +4,8 @@
 # otherwise, start it by ruuning
 systemctl --user start xfce4-notifyd.service
 
-
+## Erase stuff we don't need
+dnf erase claws-mail asunder pragha geany xfburn pidgin gnumeric transmission -y
 
 # basic stuff
 dnf install hdparm htop iftop atop ytop nc inxi lshw  screen -y
