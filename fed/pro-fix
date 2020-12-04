@@ -10,11 +10,22 @@ dnf erase claws-mail asunder pragha geany xfburn pidgin gnumeric transmission -y
 # basic stuff
 dnf install hdparm htop iftop atop ytop nc inxi lshw  screen -y
 
+dnf install xreader x2goserver wodim xbacklight usbutils redshift neofetch -y
+
+# FS related
+dnf install ntfsprogs fuse-exfat exfat-utils samba-client cifs-utils gvfs-fuse gvfs-smb -y
+
+# stuff networked / office environments
+sudo dnf install system-config-printer  simple-scan -y
+
+# scan and print
+dnf install simple-scan hplip-gui system-config-printer pdfmod tesseract tesseract-langpack-ara tesseract-langpack-hin -y
+
 # some goodies!
 dnf install levien-inconsolata-fonts arc-theme numix-gtk-theme f30-backgrounds-extras-gnome -y
 
 # desktop use stuff
-dnf install gimp gnome-maps simple-scan hplip-gui system-config-printer bleachbit chromium thunderbird -y
+dnf install gimp gnome-maps bleachbit remmina chromium thunderbird -y
 
 dnf install xournalpp libreoffice-{calc,writer,draw,impress} -y
 
