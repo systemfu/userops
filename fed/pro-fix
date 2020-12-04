@@ -13,7 +13,7 @@ dnf install hdparm htop iftop atop ytop nc inxi lshw  screen -y
 dnf install xreader x2goserver wodim xbacklight usbutils redshift neofetch -y
 
 # FS related
-dnf install ntfsprogs fuse-exfat exfat-utils samba-client cifs-utils gvfs-fuse gvfs-smb -y
+dnf install ntfsprogs samba-client cifs-utils gvfs-fuse gvfs-smb -y
 
 # stuff networked / office environments
 sudo dnf install system-config-printer  simple-scan -y
