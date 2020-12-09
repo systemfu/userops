@@ -1,0 +1,144 @@
+#!/bin/bash
+## Dev Setup
+## to genrate usbguard policy run:
+## sudo usbguard generate-policy -P > _rules.conf
+## it will generate for all currently connceted decices
+
+if [ "$EUID" == 0 ]
+  then echo "Please run as regular user"
+  exit
+fi
+
+read -r -p "Configure Basic Links/Bookmarks and Desktop Env? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+	cd ~
+	#cat << 'EOF' > ~/.config/gtk-3.0/bookmarks
+	#EOF
+
+	sudo systemctl enable syncthing@$USER.service
+	sudo systemctl start syncthing@$USER.service
+else
+    echo "skipping basic desktop configuration"
+fi
+
+
+#Ref: https://askubuntu.com/questions/103634/any-good-application-for-data-usage-monitor
+read -r -p "Configure Data Usage Monitoring? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+	sudo dnf install vnstat -y
+	sudo vnstat -u -i wlp2s0
+	sudo systemctl start vnstat.service
+	sudo systemctl enable vnstat.service
+else
+    echo "skipping data usage monitoring configuration"
+fi
+
+
+# Arduino
+sudo usermod -a -G dialout,lock $USER
+
+
+read -r -p "Configure Git User? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+    echo "Please enter your git author name:"
+    read GITNAME
+    echo "Please enter your git author email:"
+    read GITEMAIL
+    git config --global user.email "$GITEMAIL"
+    git config --global user.name "$GITNAME"
+else
+    echo "skipping git configuration"
+fi
+
+
+
+read -r -p "Configure Maven ~/.m2 https settings? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+echo "configuring maven"
+# maven force ssl use
+rm -rf ~/.m2
+mkdir ~/.m2
+cat <<'EOF' >> ~/.m2/settings.xml
+<settings>
+  <activeProfiles>
+    <!--make the profile active all the time -->
+    <activeProfile>securecentral</activeProfile>
+  </activeProfiles>
+  <profiles>
+    <profile>
+      <id>securecentral</id>
+      <!--Override the repository (and pluginRepository) "central" from the
+	 Maven Super POM -->
+      <repositories>
+	<repository>
+	  <id>central</id>
+	  <url>https://repo1.maven.org/maven2</url>
+	  <releases>
+	    <enabled>true</enabled>
+	  </releases>
+	</repository>
+      </repositories>
+      <pluginRepositories>
+	<pluginRepository>
+	  <id>central</id>
+	  <url>https://repo1.maven.org/maven2</url>
+	  <releases>
+	    <enabled>true</enabled>
+	  </releases>
+	</pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+</settings>
+EOF
+else
+    echo "skipping maven configuration"
+fi
+
+
+read -r -p "Configure Postgresql? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+	sudo postgresql-setup --initdb --unit postgresql
+	#sudo postgresql-setup initdb ## for EL7
+	sudo systemctl start postgresql
+	sudo systemctl enable postgresql
+        echo "Please enter desired postgres password"
+        read PGPASSWORD
+	sudo su postgres -c "psql postgres -c \"ALTER USER postgres WITH ENCRYPTED PASSWORD '$PGPASSWORD'\""
+	sudo cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf_BACKUP
+	sudo sed -i 's#ident$#md5#g' /var/lib/pgsql/data/pg_hba.conf
+	
+	#below should work (any one) instead of above one; but doesn't. investigate later.
+	#echo "host	all	all	127.0.0.1/32	md5" | sudo tee --append /var/lib/pgsql/data/pg_hba.conf > /dev/null
+	#cat /var/lib/pgsql/data/pg_hba.conf | sed -i "s/host\s+all\s+all\s+127.0.0.1/32\s+ident/host\tall\tall\t127.0.0.1/32\tmd5/" > /dir/temp_file
+	
+	#uncomment below line to make it listen on all addresses
+	#echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
+	sudo systemctl restart postgresql
+else
+    echo "skipping postgresql configuration"
+fi
+
+
+
+read -r -p "Configure Tiemzone and Hostname? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+    read -p 'Please enter timezone:' TZONE
+    sudo timedatectl set-timezone $TZONE
+    read -p 'Please enter desired hostname:' LHOSTNAME
+    sudo hostnamectl set-hostname $LHOSTNAME
+else
+    echo "skipping android configuration"
+fi
+
+
+echo "dev setup done."
+
+
+

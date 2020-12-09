@@ -44,6 +44,7 @@ echo "You chose choice $REPLY which is $opt"
             break;
             ;;
         "Option E")
+            echo "xinput disable $(xinput --list |grep -oP 'Touchscreen.*id=\K.*?(?=\s)')" >> ~/.bash_profile
             break;
             ;;
         "Quit")
@@ -53,5 +54,8 @@ echo "You chose choice $REPLY which is $opt"
     esac
 done
 
-
+#natural scrolling
+#ref: https://unix.stackexchange.com/questions/262170/problem-with-touchpad-on-fedora23
+#sudo dnf install xorg-x11-drv-synaptics* -y
+#synclient VertScrollDelta=-30  # Trackpad: natural scrolling
 
