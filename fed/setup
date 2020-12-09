@@ -1,0 +1,57 @@
+#!/bin/bash
+# Post Instalation Setup / Modifications
+RED='\033[0;31m'
+GRN='\033[1;32m'
+NOC='\033[0m' # No Color
+ODEV=$1
+PS3='Please enter your choice: '
+options=("Run Pro Script" "Add new User" "Rename User" "Option A" "Option B" "Option C" "Option D" "Option E" "Quit")
+select opt in "${options[@]}"
+do
+echo "You chose choice $REPLY which is $opt"
+    case $opt in
+        "Run Pro Script")
+            curl https://raw.githubusercontent.com/systemfu/userops/main/fed/pro-fix -sSf | sh
+            break;
+            ;;
+        "Add new User")
+			echo "Please enter new user name:"
+			read UNAME
+			useradd $UNAME
+			echo "Now set password for user $UNAME:"
+			passwd $UNAME
+            break;
+            ;;
+        "Rename User")
+			echo "Please enter old user name:"
+			read ONAME        
+			echo "Please enter new user name:"
+			read UNAME			
+			usermod -l $UNAME $ONAME
+			groupmod --new-name $UNAME $ONAME
+            break;
+            ;;            
+        "Option A")
+            break;
+            ;;
+        "Option B")
+            break;	
+            ;;
+        "Option C")
+            break;
+            ;;
+        "Option D")
+            break;
+            ;;
+        "Option E")
+            break;
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
+
+
