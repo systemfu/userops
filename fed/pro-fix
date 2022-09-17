@@ -8,7 +8,7 @@ systemctl --user start xfce4-notifyd.service
 dnf erase claws-mail asunder pragha geany xfburn pidgin gnumeric transmission -y
 
 # basic stuff
-dnf install hdparm htop iftop atop ytop nc inxi lshw  screen -y
+dnf install ncdu hdparm htop iftop atop ytop nc inxi lshw  screen -y
 
 dnf install xreader x2goserver wodim xbacklight usbutils redshift neofetch -y
 
@@ -19,7 +19,7 @@ dnf install ntfsprogs samba-client cifs-utils gvfs-fuse gvfs-smb -y
 sudo dnf install system-config-printer  simple-scan -y
 
 # scan and print
-dnf install simple-scan hplip-gui system-config-printer pdfmod tesseract tesseract-langpack-ara tesseract-langpack-hin -y
+dnf install simple-scan hplip-gui foo2zjs system-config-printer pdfmod tesseract tesseract-langpack-ara tesseract-langpack-hin -y
 
 # some goodies!
 dnf install levien-inconsolata-fonts arc-theme numix-gtk-theme f30-backgrounds-extras-gnome -y
